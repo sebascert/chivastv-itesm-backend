@@ -10,7 +10,8 @@ Se necesita un runtime de python, la version a usar esta en
 python, [guia para instalar
 uv](https://docs.astral.sh/uv/getting-started/installation/).
 
-> [Guia para instalar python con uv](https://docs.astral.sh/uv/guides/install-python/)
+> [Guia para instalar python con
+> uv](https://docs.astral.sh/uv/guides/install-python/)
 
 Para agregar dependencias ejecuta:
 
@@ -30,6 +31,19 @@ uv sync
 
 # instala unicamente las dependencias de la app
 uv sync --no-dev
+```
+
+## Ejecucion
+
+Para ejecutar la api se pueden ejecutar estos comandos por medio de `uv run`, o
+activando el [entorno virtual](#entorno-virtual-de-python):
+
+```bash
+py src/main.py
+
+# otra manera es utilizando uvicorn directamente
+cd src
+uvicorn main:app --reload
 ```
 
 ## Analizador estatico y Formatting
