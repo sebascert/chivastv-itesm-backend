@@ -1,0 +1,33 @@
+[project]
+name = "chivastv-backend"
+version = "0.0.0"
+description = "Backend de ChivasTV"
+readme = "README.md"
+requires-python = ">=3.12"
+
+dependencies = []
+
+[dependency-groups]
+dev = ["mypy>=1.15.0", "ruff>=0.9.9"]
+
+[tool.mypy]
+files = "src"
+
+[tool.ruff]
+line-length = 79
+
+target-version = "py312"
+
+[tool.ruff.lint]
+select = [
+    "E",     # Pycodestyle errors
+    "F",     # Pyflakes (undeclared variables, unused imports, etc.)
+    "I",     # isort (import sorting)
+    "UP",    # pyupgrade (modern Python idioms)
+    "B",     # flake8-bugbear (common security and performance issues)
+    "S",     # flake8-bandit (security checks)
+    "ASYNC", # flake8-async (async best practices)
+    "FA",    # flake8-fastapi (FastAPI best practices)
+    "BLE",   # flake8-blind-except (blind except clauses and related issues)
+    "ANN",   # Type-related checks (type hint correctness, mismatches, etc.)
+]
