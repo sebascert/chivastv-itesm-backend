@@ -1,0 +1,137 @@
+classDiagram
+    %% === CLASE BASE ===
+    class Usuario {
+        +int id
+        +string email
+        +string contraseña_hash
+        +string nombre
+        +string apellido
+        +string direccion
+        +string ciudad
+        +string codigo_postal
+        +string estado
+        +string pais
+        +string genero
+        +date fecha_nacimiento
+        +string ocupacion
+        +datetime fecha_creacion
+    }
+
+    %% === SUBCLASES DE ROL ===
+    class FreeUser {
+        +bool publicidad_activa
+    }
+
+    class PremiumUser {
+        +datetime fecha_inicio
+        +datetime fecha_fin
+    }
+
+    class AdminUser {
+        +string permisos_especiales
+    }
+
+    %% === SESIONES Y PAGOS ===
+    class Sesion {
+        +int id
+        +int usuario_id
+        +string token
+        +datetime creado_en
+        +datetime expira_en
+    }
+
+    class PagoPremium {
+        +int id
+        +int usuario_id
+        +datetime fecha_pago
+        +string metodo
+        +float monto
+        +bool exito
+    }
+
+    %% === VIDEO BASE Y CATEGORÍAS ===
+    class Video {
+        +int id
+        +string titulo
+        +string descripcion
+        +string ruta_archivo
+        +datetime fecha_subida
+        +int categoria_id
+    }
+
+    class VideoGratis {
+    }
+
+    class VideoPremium {
+    }
+
+    class Categoria {
+        +int id
+        +string nombre
+        +string descripcion
+    }
+
+    %% === INTERACCIONES ===
+    class Comentario {
+        +int id
+        +int usuario_id
+        +int video_id
+        +string contenido
+        +datetime fecha
+        +bool es_en_vivo
+        +bool moderado
+        +bool eliminado
+    }
+
+    class LikeDislike {
+        +int id
+        +int usuario_id
+        +int video_id
+        +bool es_like
+    }
+
+    class VistaVideo {
+        +int id
+        +int usuario_id
+        +int video_id
+        +datetime fecha
+        +int duracion_reproducida
+    }
+
+    %% === HERENCIA Y EXTENSIONES ===
+    Usuario <|-- FreeUser
+    Usuario <|-- PremiumUser
+    Usuario <|-- AdminUser
+
+    Video <|-- VideoGratis
+    Video <|-- VideoPremium
+
+    %% === RELACIONES GENERALES ===
+    Usuario "1" --> "*" Sesion : inicia
+    Usuario "1" --> "*" PagoPremium : realiza
+
+    Categoria "1" --> "*" Video : clasifica
+    AdminUser "1" --> "*" Video : sube
+
+    %% === FREEUSER puede ver VideoGratis
+    FreeUser "1" --> "*" VideoGratis : puede ver
+    FreeUser "1" --> "*" Comentario : comenta en gratis
+    FreeUser "1" --> "*" LikeDislike : reacciona en gratis
+    FreeUser "1" --> "*" VistaVideo : ve gratis
+
+    %% === PREMIUM puede ver todo
+    PremiumUser "1" --> "*" VideoGratis : puede ver
+    PremiumUser "1" --> "*" VideoPremium : puede ver
+    PremiumUser "1" --> "*" Comentario : comenta en ambos
+    PremiumUser "1" --> "*" LikeDislike : reacciona en ambos
+    PremiumUser "1" --> "*" VistaVideo : ve ambos
+
+    %% === COMENTARIOS & MODERACIÓN ===
+    Comentario "1" --> "1" Video : pertenece a
+    Usuario "1" --> "*" Comentario : escribe
+    AdminUser "1" --> "*" Comentario : modera
+    AdminUser "1" --> "*" Comentario : puede borrar
+
+    %% === REACCIONES Y VISTAS ===
+    Video "1" --> "*" LikeDislike : recibe
+    Video "1" --> "*" VistaVideo : tiene vistas
