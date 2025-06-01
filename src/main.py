@@ -1,7 +1,10 @@
 import uvicorn
 from fastapi import FastAPI
 
+from db.setup import db_setup
 from utils.types import json
+
+db_setup()
 
 app = FastAPI()
 
