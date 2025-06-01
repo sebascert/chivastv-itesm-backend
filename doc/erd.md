@@ -1,3 +1,4 @@
+```mermaid
 classDiagram
     %% === CLASE BASE ===
     class Usuario {
@@ -135,3 +136,4 @@ classDiagram
     %% === REACCIONES Y VISTAS ===
     Video "1" --> "*" LikeDislike : recibe
     Video "1" --> "*" VistaVideo : tiene vistas
+```
