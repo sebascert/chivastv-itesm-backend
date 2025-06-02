@@ -1,161 +1,151 @@
+erDiagram
 
-classDiagram
-    
-    %% === CLASE BASE ===
-    class Usuario {
-        +int id
-        +string email
-        +string password_hash
-        +string nombre
-        +string apellido
-        +string direccion
-        +string ciudad
-        +string codigo_postal
-        +string estado
-        +string pais
-        +string genero
-        +date fecha_nacimiento
-        +string ocupacion
-        +datetime fecha_creacion
-        +bool es_premium
+    %% === ENTIDADES PRINCIPALES ===
+    USUARIO {
+        int id PK
+        string email
+        string password_hash
+        string nombre
+        string apellido
+        string direccion
+        string ciudad
+        string codigo_postal
+        string estado
+        string pais
+        string genero
+        date fecha_nacimiento
+        string ocupacion
+        datetime fecha_creacion
     }
 
-    %% === ROLES Y PERMISOS ===
-    class Permiso {
-        +int id
-        +string nombre
+    PERMISO {
+        int id PK
+        string nombre
     }
 
-    class AdminUser {
-        +int id
-        +string email
-        +string password_hash
+    PERMISO_USUARIO {
+        int usuario_id FK
+        int permiso_id FK
     }
 
-    class AdminPermiso {
-        +int admin_id
-        +int permiso_id
+    SESION {
+        int id PK
+        int usuario_id FK
+        string token
+        datetime creado_en
+        datetime expira_en
     }
 
-    %% === MODERACIÓN ===
-    class ModeracionComentario {
-        +int id
-        +int admin_id
-        +int comentario_id
-        +string accion
-        +datetime fecha
+    PAGO_PREMIUM {
+        int id PK
+        int usuario_id FK
+        datetime fecha_pago
+        string metodo
+        float monto
+        bool fue_exitoso
+        string referencia_pasarela
     }
 
-    %% === SESIONES Y PAGOS ===
-    class Sesion {
-        +int id
-        +int usuario_id
-        +string token
-        +datetime creado_en
-        +datetime expira_en
+    VIDEO {
+        int id PK
+        string titulo
+        string descripcion
+        string ruta_archivo
+        datetime fecha_subida
+        int categoria_id FK
+        bool es_publico
+        bool es_premium
+        bool es_partido
     }
 
-    class PagoPremium {
-        +int id
-        +int usuario_id
-        +datetime fecha_pago
-        +string metodo
-        +float monto
-        +bool fue_exitoso
-        +string referencia_pasarela
+    CATEGORIA {
+        int id PK
+        string nombre
+        string descripcion
     }
 
-    %% === VIDEO Y CATEGORÍAS ===
-    class Video {
-        +int id
-        +string titulo
-        +string descripcion
-        +string ruta_archivo
-        +datetime fecha_subida
-        +int categoria_id
-        +bool es_publico
-        +bool es_premium
-        +bool es_partido
+    COMENTARIO {
+        int id PK
+        int usuario_id FK
+        int video_id FK
+        string contenido
+        datetime fecha
+        bool es_en_vivo
+        bool moderado
+        bool eliminado
     }
 
-    class Categoria {
-        +int id
-        +string nombre
-        +string descripcion
+    MODERACION_COMENTARIO {
+        int id PK
+        int usuario_id FK
+        int comentario_id FK
+        string accion
+        datetime fecha
     }
 
-    %% === INTERACCIONES ===
-    class Comentario {
-        +int id
-        +int usuario_id
-        +int video_id
-        +string contenido
-        +datetime fecha
-        +bool es_en_vivo
-        +bool moderado
-        +bool eliminado
+    LIKE_DISLIKE {
+        int id PK
+        int usuario_id FK
+        int video_id FK
+        bool es_like
     }
 
-    class LikeDislike {
-        +int id
-        +int usuario_id
-        +int video_id
-        +bool es_like
+    VISTA_VIDEO {
+        int id PK
+        int video_id FK
+        int usuario_id FK
+        datetime fecha
+        int duracion_reproducida
     }
 
-    class VistaVideo {
-        +int id
-        +int video_id
-        +datetime fecha
-        +int duracion_reproducida
+    ESTADISTICAS_PARTIDO {
+        int id PK
+        int video_id FK
+        int equipoA_id FK
+        int equipoB_id FK
+        int golesA
+        int golesB
     }
 
-    %% === ESTADÍSTICAS DE PARTIDO Y EQUIPO ===
-    class EstadisticasPartido {
-        +int id
-        +int video_id
-        +int equipoA_id
-        +int equipoB_id
-        +int golesA
-        +int golesB
+    FALTA {
+        int id PK
+        int estadisticas_partido_id FK
+        int equipo_id FK
+        string descripcion
     }
 
-    class Falta {
-        +int id
-        +int estadisticas_partido_id
-        +int equipo_id
-        +string descripcion
-    }
-
-    class Equipo {
-        +int id
-        +string nombre
+    EQUIPO {
+        int id PK
+        string nombre
     }
 
     %% === RELACIONES ===
-    Usuario "1" --> "*" Sesion : inicia
-    Usuario "1" --> "*" PagoPremium : realiza
-    Usuario "1" --> "*" Comentario : escribe
-    Usuario "1" --> "*" LikeDislike : reacciona
-    Video "1" --> "*" VistaVideo : vistas
+    USUARIO ||--o{ SESION : inicia
+    USUARIO ||--o{ PAGO_PREMIUM : realiza
+    USUARIO ||--o{ COMENTARIO : escribe
+    USUARIO ||--o{ LIKE_DISLIKE : reacciona
+    USUARIO ||--o{ MODERACION_COMENTARIO : modera
+    USUARIO ||--o{ PERMISO_USUARIO : tiene
+    USUARIO ||--o{ VISTA_VIDEO : ve
 
-    AdminUser "1" --> "*" AdminPermiso : tiene
-    AdminPermiso "*" --> "1" Permiso : refiere
+    PERMISO ||--o{ PERMISO_USUARIO : otorga
 
-    AdminUser "1" --> "*" ModeracionComentario : modera
-    Comentario "1" --> "*" ModeracionComentario : recibe
+    VIDEO ||--o{ COMENTARIO : recibe
+    VIDEO ||--o{ LIKE_DISLIKE : recibe
+    VIDEO ||--o{ VISTA_VIDEO : es_visto
+    VIDEO ||--|| ESTADISTICAS_PARTIDO : contiene
 
-    Categoria "1" --> "*" Video : clasifica
-    Video "1" --> "*" Comentario : recibe
-    Video "1" --> "*" LikeDislike : recibe
-    Video "1" --> "*" VistaVideo : vistas
+    CATEGORIA ||--o{ VIDEO : clasifica
 
-    Usuario "1" --> "*" Video : puede ver según es_premium
+    COMENTARIO ||--o{ MODERACION_COMENTARIO : recibe
 
-    EstadisticasPartido "1" --> "1" Equipo : equipoA
-    EstadisticasPartido "1" --> "1" Equipo : equipoB
-    EstadisticasPartido "1" --> "*" Falta : contiene faltas
-    Falta "*" --> "1" Equipo : cometida por
+    ESTADISTICAS_PARTIDO ||--o{ FALTA : contiene
+    FALTA }o--|| EQUIPO : cometida_por
 
-    Video "1" --> "0..1" EstadisticasPartido : contiene
+    ESTADISTICAS_PARTIDO }|--|| EQUIPO : equipoA
+    ESTADISTICAS_PARTIDO }|--|| EQUIPO : equipoB
 
+    %% === NOTAS DE PERMISOS ===
+    %% Usuarios con permiso "ver_video_premium" pueden ver videos premium
+    %% Usuarios con permiso "moderar_comentarios" pueden moderar comentarios
+    %% El permiso "admin" implica acceso total
