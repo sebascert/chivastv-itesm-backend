@@ -1,6 +1,5 @@
+```mermaid
 erDiagram
-
-    %% === ENTIDADES PRINCIPALES ===
     USUARIO {
         int id PK
         string email
@@ -75,27 +74,10 @@ erDiagram
         bool eliminado
     }
 
-    MODERACION_COMENTARIO {
+    MODERACION_LOG {
         int id PK
-        int usuario_id FK
-        int comentario_id FK
         string accion
         datetime fecha
-    }
-
-    LIKE_DISLIKE {
-        int id PK
-        int usuario_id FK
-        int video_id FK
-        bool es_like
-    }
-
-    VISTA_VIDEO {
-        int id PK
-        int video_id FK
-        int usuario_id FK
-        datetime fecha
-        int duracion_reproducida
     }
 
     ESTADISTICAS_PARTIDO {
@@ -123,21 +105,16 @@ erDiagram
     USUARIO ||--o{ SESION : inicia
     USUARIO ||--o{ PAGO_PREMIUM : realiza
     USUARIO ||--o{ COMENTARIO : escribe
-    USUARIO ||--o{ LIKE_DISLIKE : reacciona
-    USUARIO ||--o{ MODERACION_COMENTARIO : modera
     USUARIO ||--o{ PERMISO_USUARIO : tiene
-    USUARIO ||--o{ VISTA_VIDEO : ve
 
     PERMISO ||--o{ PERMISO_USUARIO : otorga
 
     VIDEO ||--o{ COMENTARIO : recibe
-    VIDEO ||--o{ LIKE_DISLIKE : recibe
-    VIDEO ||--o{ VISTA_VIDEO : es_visto
     VIDEO ||--|| ESTADISTICAS_PARTIDO : contiene
 
     CATEGORIA ||--o{ VIDEO : clasifica
 
-    COMENTARIO ||--o{ MODERACION_COMENTARIO : recibe
+    COMENTARIO ||--o{ MODERACION_LOG : recibe
 
     ESTADISTICAS_PARTIDO ||--o{ FALTA : contiene
     FALTA }o--|| EQUIPO : cometida_por
@@ -145,7 +122,11 @@ erDiagram
     ESTADISTICAS_PARTIDO }|--|| EQUIPO : equipoA
     ESTADISTICAS_PARTIDO }|--|| EQUIPO : equipoB
 
+    %% === NUEVAS RELACIONES PARA ADMINISTRADORES ===
+    USUARIO ||--o{ MODERACION_LOG : puede_acceder_si_admin
+    USUARIO ||--o{ COMENTARIO : puede_borrar_si_admin
+
     %% === NOTAS DE PERMISOS ===
     %% Usuarios con permiso "ver_video_premium" pueden ver videos premium
     %% Usuarios con permiso "moderar_comentarios" pueden moderar comentarios
-    %% El permiso "admin" implica acceso total
+    %% El permiso "admin" implica acceso total, incluyendo acceso al log de moderación y eliminación de comentarios
