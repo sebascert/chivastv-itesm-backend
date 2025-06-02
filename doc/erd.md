@@ -1,10 +1,9 @@
-```mermaid
 classDiagram
-    %% === CLASE BASE ===
+    %% === CLASE BASE NORMALIZADA ===
     class Usuario {
         +int id
         +string email
-        +string contraseña_hash
+        +string password_hash
         +string nombre
         +string apellido
         +string direccion
@@ -19,17 +18,34 @@ classDiagram
     }
 
     %% === SUBCLASES DE ROL ===
-    class FreeUser {
-        +bool publicidad_activa
-    }
-
+    class FreeUser
     class PremiumUser {
-        +datetime fecha_inicio
-        +datetime fecha_fin
+        +datetime membresia_inicio
+        +datetime membresia_fin
+    }
+    class Permiso {
+    +int id
+    +string nombre  
     }
 
     class AdminUser {
-        +string permisos_especiales
+    +int id
+    +string email
+    +string password_hash
+    }
+
+    class AdminPermiso {
+    +int admin_id
+    +int permiso_id
+    }
+
+    %% === MODERACIÓN ===
+    class ModeracionComentario {
+        +int id
+        +int admin_id
+        +int comentario_id
+        +string accion
+        +datetime fecha
     }
 
     %% === SESIONES Y PAGOS ===
@@ -47,7 +63,8 @@ classDiagram
         +datetime fecha_pago
         +string metodo
         +float monto
-        +bool exito
+        +bool fue_exitoso
+        +string referencia_pasarela
     }
 
     %% === VIDEO BASE Y CATEGORÍAS ===
@@ -58,13 +75,12 @@ classDiagram
         +string ruta_archivo
         +datetime fecha_subida
         +int categoria_id
+        +bool es_publico
+        +bool es_partido
     }
 
-    class VideoGratis {
-    }
-
-    class VideoPremium {
-    }
+    class VideoGratis
+    class VideoPremium
 
     class Categoria {
         +int id
@@ -92,48 +108,69 @@ classDiagram
     }
 
     class VistaVideo {
+    +int id
+    +int video_id
+    +datetime fecha
+    +int duracion_reproducida
+}
+
+
+    %% === ESTADÍSTICAS DE PARTIDO Y EQUIPO ===
+    class EstadisticasPartido {
         +int id
-        +int usuario_id
         +int video_id
-        +datetime fecha
-        +int duracion_reproducida
+        +int equipoA_id
+        +int equipoB_id
+        +int golesA
+        +int golesB
     }
 
-    %% === HERENCIA Y EXTENSIONES ===
+    class Falta {
+        +int id
+        +int estadisticas_partido_id
+        +int equipo_id
+        +string descripcion
+    }
+
+    class Equipo {
+        +int id
+        +string nombre
+    }
+
+    %% === HERENCIA ===
     Usuario <|-- FreeUser
     Usuario <|-- PremiumUser
     Usuario <|-- AdminUser
-
     Video <|-- VideoGratis
     Video <|-- VideoPremium
 
-    %% === RELACIONES GENERALES ===
+    %% === RELACIONES ===
     Usuario "1" --> "*" Sesion : inicia
     Usuario "1" --> "*" PagoPremium : realiza
+    Usuario "1" --> "*" Comentario : escribe
+    Usuario "1" --> "*" LikeDislike : reacciona
+    Video "1" --> "*" VistaVideo : vistas
+
+
+    AdminUser "1" --> "*" AdminPermiso : tiene
+    AdminPermiso "*" --> "1" Permiso : refiere
+
+    AdminUser "1" --> "*" ModeracionComentario : modera
+    Comentario "1" --> "*" ModeracionComentario : recibe
 
     Categoria "1" --> "*" Video : clasifica
-    AdminUser "1" --> "*" Video : sube
+    Video "1" --> "*" Comentario : recibe
+    Video "1" --> "*" LikeDislike : recibe
+    Video "1" --> "*" VistaVideo : vistas
 
-    %% === FREEUSER puede ver VideoGratis
     FreeUser "1" --> "*" VideoGratis : puede ver
     FreeUser "1" --> "*" Comentario : comenta en gratis
-    FreeUser "1" --> "*" LikeDislike : reacciona en gratis
-    FreeUser "1" --> "*" VistaVideo : ve gratis
+    PremiumUser "1" --> "*" VideoGratis : ve
+    PremiumUser "1" --> "*" VideoPremium : ve
 
-    %% === PREMIUM puede ver todo
-    PremiumUser "1" --> "*" VideoGratis : puede ver
-    PremiumUser "1" --> "*" VideoPremium : puede ver
-    PremiumUser "1" --> "*" Comentario : comenta en ambos
-    PremiumUser "1" --> "*" LikeDislike : reacciona en ambos
-    PremiumUser "1" --> "*" VistaVideo : ve ambos
+    EstadisticasPartido "1" --> "1" Equipo : equipoA
+    EstadisticasPartido "1" --> "1" Equipo : equipoB
+    EstadisticasPartido "1" --> "*" Falta : contiene faltas
+    Falta "*" --> "1" Equipo : cometida por
 
-    %% === COMENTARIOS & MODERACIÓN ===
-    Comentario "1" --> "1" Video : pertenece a
-    Usuario "1" --> "*" Comentario : escribe
-    AdminUser "1" --> "*" Comentario : modera
-    AdminUser "1" --> "*" Comentario : puede borrar
-
-    %% === REACCIONES Y VISTAS ===
-    Video "1" --> "*" LikeDislike : recibe
-    Video "1" --> "*" VistaVideo : tiene vistas
-```
+    Video "1" --> "0..1" EstadisticasPartido : contiene
