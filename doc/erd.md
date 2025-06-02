@@ -1,6 +1,5 @@
-    ```mermaid
 classDiagram
-    %% === CLASE BASE NORMALIZADA ===
+    %% === CLASE BASE ===
     class Usuario {
         +int id
         +string email
