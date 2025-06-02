@@ -1,3 +1,4 @@
+    ```mermaid
 classDiagram
     %% === CLASE BASE NORMALIZADA ===
     class Usuario {
@@ -15,28 +16,24 @@ classDiagram
         +date fecha_nacimiento
         +string ocupacion
         +datetime fecha_creacion
+        +bool es_premium
     }
 
-    %% === SUBCLASES DE ROL ===
-    class FreeUser
-    class PremiumUser {
-        +datetime membresia_inicio
-        +datetime membresia_fin
-    }
+    %% === ROLES Y PERMISOS ===
     class Permiso {
-    +int id
-    +string nombre  
+        +int id
+        +string nombre
     }
 
     class AdminUser {
-    +int id
-    +string email
-    +string password_hash
+        +int id
+        +string email
+        +string password_hash
     }
 
     class AdminPermiso {
-    +int admin_id
-    +int permiso_id
+        +int admin_id
+        +int permiso_id
     }
 
     %% === MODERACIÓN ===
@@ -67,7 +64,7 @@ classDiagram
         +string referencia_pasarela
     }
 
-    %% === VIDEO BASE Y CATEGORÍAS ===
+    %% === VIDEO Y CATEGORÍAS ===
     class Video {
         +int id
         +string titulo
@@ -76,11 +73,9 @@ classDiagram
         +datetime fecha_subida
         +int categoria_id
         +bool es_publico
+        +bool es_premium
         +bool es_partido
     }
-
-    class VideoGratis
-    class VideoPremium
 
     class Categoria {
         +int id
@@ -108,12 +103,11 @@ classDiagram
     }
 
     class VistaVideo {
-    +int id
-    +int video_id
-    +datetime fecha
-    +int duracion_reproducida
-}
-
+        +int id
+        +int video_id
+        +datetime fecha
+        +int duracion_reproducida
+    }
 
     %% === ESTADÍSTICAS DE PARTIDO Y EQUIPO ===
     class EstadisticasPartido {
@@ -137,20 +131,12 @@ classDiagram
         +string nombre
     }
 
-    %% === HERENCIA ===
-    Usuario <|-- FreeUser
-    Usuario <|-- PremiumUser
-    Usuario <|-- AdminUser
-    Video <|-- VideoGratis
-    Video <|-- VideoPremium
-
     %% === RELACIONES ===
     Usuario "1" --> "*" Sesion : inicia
     Usuario "1" --> "*" PagoPremium : realiza
     Usuario "1" --> "*" Comentario : escribe
     Usuario "1" --> "*" LikeDislike : reacciona
     Video "1" --> "*" VistaVideo : vistas
-
 
     AdminUser "1" --> "*" AdminPermiso : tiene
     AdminPermiso "*" --> "1" Permiso : refiere
@@ -163,10 +149,7 @@ classDiagram
     Video "1" --> "*" LikeDislike : recibe
     Video "1" --> "*" VistaVideo : vistas
 
-    FreeUser "1" --> "*" VideoGratis : puede ver
-    FreeUser "1" --> "*" Comentario : comenta en gratis
-    PremiumUser "1" --> "*" VideoGratis : ve
-    PremiumUser "1" --> "*" VideoPremium : ve
+    Usuario "1" --> "*" Video : puede ver según es_premium
 
     EstadisticasPartido "1" --> "1" Equipo : equipoA
     EstadisticasPartido "1" --> "1" Equipo : equipoB
@@ -174,3 +157,4 @@ classDiagram
     Falta "*" --> "1" Equipo : cometida por
 
     Video "1" --> "0..1" EstadisticasPartido : contiene
+
