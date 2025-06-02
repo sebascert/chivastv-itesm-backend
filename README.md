@@ -33,6 +33,17 @@ uv sync
 uv sync --no-dev
 ```
 
+## Configuracion
+
+Se debe de configurar el archivo `src/.env` con las siguientes variables:
+
+```env
+CHIVASTV_DATABASE_USER="user" # connection user
+CHIVASTV_DATABASE_PSWD="pswd" # user password
+CHIVASTV_DATABASE_HOST="localhost" # database host
+CHIVASTV_DATABASE_NAME="ctvbackend" # user database name
+```
+
 ## Ejecucion
 
 Para ejecutar la api se pueden ejecutar estos comandos por medio de `uv run`, o

@@ -1,11 +1,16 @@
 import uvicorn
 from fastapi import FastAPI
 
+from db.setup import db_setup
+from utils.types import json
+
+db_setup()
+
 app = FastAPI()
 
 
 @app.get("/")
-async def root() -> dict[str, str]:
+async def root() -> json:
     return {"message": "ChivasTV Backend"}
 
 
