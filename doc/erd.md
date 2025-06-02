@@ -1,4 +1,6 @@
+
 classDiagram
+    
     %% === CLASE BASE ===
     class Usuario {
         +int id
