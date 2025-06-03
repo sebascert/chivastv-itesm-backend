@@ -1,14 +1,13 @@
 import datetime as dt
-from datetime import datetime, timedelta
-from uuid import UUID
+from datetime import datetime
 
 import jwt
 from fastapi import HTTPException, status
 from jwt.exceptions import InvalidTokenError
 from passlib.context import CryptContext
-from pydantic import BaseModel
 
-from utils.config import JWT_ALGORITHM, JWT_EXPIRE_MINUTES, JWT_SECRET_KEY
+from models.token import TokenData
+from utils.config import JWT_ALGORITHM, JWT_SECRET_KEY
 
 # Password hashing setup
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -18,22 +17,6 @@ CREDENTIALS_EXCEPTION = HTTPException(
     detail="Could not validate credentials",
     headers={"WWW-Authenticate": "Bearer"},
 )
-
-
-class TokenData(BaseModel):
-    exp: datetime
-    sub: UUID
-    role: str
-
-    @classmethod
-    def create(
-        cls, sub: UUID, role: str, expires_delta: timedelta | None = None
-    ) -> "TokenData":
-        """create TokenData instance with default expiration"""
-        exp = datetime.now(dt.UTC) + (
-            expires_delta or timedelta(minutes=JWT_EXPIRE_MINUTES)
-        )
-        return cls(sub=sub, role=role, exp=exp)
 
 
 def hast_pswd(pswd: str) -> str:

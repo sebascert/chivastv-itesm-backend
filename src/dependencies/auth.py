@@ -4,7 +4,8 @@ from uuid import UUID
 from fastapi import Depends, HTTPException, Request, status
 from fastapi.security import OAuth2PasswordBearer
 
-from utils.auth import TokenData, decode_jwt
+from models.token import TokenData
+from utils.auth import decode_jwt
 
 # ruff: noqa: S105
 TOKEN_ENDPOINT = "user/token/"
