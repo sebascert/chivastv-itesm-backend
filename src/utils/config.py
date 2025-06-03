@@ -9,14 +9,16 @@ load_dotenv(dotenv_path=SRC_DIR / ".env")
 
 
 def getenv[T](var: str, constructor: Callable[[str], T]) -> T:
-    """get variable or raise error if it does not exists"""
-    res = os.getenv(var)
-    if res is None:
+    """get and validate environment variable"""
+    value = os.getenv(var)
+    if value is None:
         raise OSError(f"missing '{var}' env variable")
     try:
-        return constructor(var)
-    except TypeError as e:
-        raise OSError(f"env variable '{var}' has incompatible type") from e
+        return constructor(value)
+    except (TypeError, ValueError) as e:
+        raise OSError(
+            f"env variable '{var}' of value '{value}' has invalid type"
+        ) from e
 
 
 # DATABASE
