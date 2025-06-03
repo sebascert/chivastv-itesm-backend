@@ -42,6 +42,10 @@ CHIVASTV_DATABASE_USER="user" # connection user
 CHIVASTV_DATABASE_PSWD="pswd" # user password
 CHIVASTV_DATABASE_HOST="localhost" # database host
 CHIVASTV_DATABASE_NAME="ctvbackend" # user database name
+
+JWT_SECRET_KEY="b39abf5b..." # openssl rand -hex 32
+JWT_ALGORITHM="HS256" # signing algorithm for JWT
+JWT_EXPIRE_MINUTES="15" # default expiration for JWT tokens
 ```
 
 ## Ejecucion
