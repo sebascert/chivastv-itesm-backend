@@ -1,7 +1,10 @@
 # ruff: noqa: B008
 
-from fastapi import APIRouter
+from typing import Annotated
 
+from fastapi import APIRouter, Depends
+
+from dependencies.resource import get_comment_by_id, get_video_by_id
 from utils.types import json
 
 router = APIRouter(
@@ -11,18 +14,24 @@ router = APIRouter(
 
 
 @router.get("/{video_id}/{start}/{end}")
-async def get_comments_in_range(video_id: str, start: int, end: int) -> json:
+async def get_comments_in_range(
+    video_id: Annotated[str, Depends(get_video_by_id)], start: int, end: int
+) -> json:
     """get video comments in range"""
     raise NotImplementedError()
 
 
 @router.post("/{video_id}")
-async def create_comment(video_id: str) -> json:
+async def create_comment(
+    video_id: Annotated[str, Depends(get_video_by_id)],
+) -> json:
     """create comment in video"""
     raise NotImplementedError()
 
 
 @router.delete("/{comment_id}")
-async def delete_commen(comment_id: str) -> json:
+async def delete_commen(
+    comment_id: Annotated[str, Depends(get_comment_by_id)],
+) -> json:
     """delete comment entry"""
     raise NotImplementedError()
