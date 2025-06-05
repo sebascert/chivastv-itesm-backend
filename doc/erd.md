@@ -1,8 +1,10 @@
 ```mermaid
 erDiagram
+
+    %% === ENTIDADES PRINCIPALES ===
     USUARIO {
-        int id PK
-        string email
+        int ID PK
+        string email 
         string password_hash
         string nombre
         string apellido
@@ -18,87 +20,86 @@ erDiagram
     }
 
     PERMISO {
-        int id PK
-        string nombre
+        int ID PK
+        string nombre 
     }
 
     PERMISO_USUARIO {
-        int usuario_id FK
-        int permiso_id FK
+        string user_ID PK, FK
+        string permiso_nombre PK, FK
     }
 
     SESION {
-        int id PK
-        int usuario_id FK
-        string token
+        string token PK
+        string usuario_email FK
         datetime creado_en
         datetime expira_en
     }
 
     PAGO_PREMIUM {
-        int id PK
-        int usuario_id FK
+        string referencia_pasarela PK
+        string usuario_email FK
         datetime fecha_pago
         string metodo
         float monto
         bool fue_exitoso
-        string referencia_pasarela
+    }
+
+    CATEGORIA {
+        int ID PK
+        string nombre 
+        string descripcion
     }
 
     VIDEO {
-        int id PK
+        int ID PK
+        string ruta_archivo 
         string titulo
         string descripcion
-        string ruta_archivo
         datetime fecha_subida
-        int categoria_id FK
+        string categoria_nombre FK
         bool es_publico
         bool es_premium
         bool es_partido
     }
 
-    CATEGORIA {
-        int id PK
-        string nombre
-        string descripcion
-    }
-
     COMENTARIO {
-        int id PK
-        int usuario_id FK
-        int video_id FK
+        int ID PK
+        string usuario_email FK
+        string video_ruta_archivo FK
+        datetime fecha PK
         string contenido
-        datetime fecha
         bool es_en_vivo
         bool moderado
         bool eliminado
     }
 
     MODERACION_LOG {
-        int id PK
+        int ID PK
+        string admin_email FK
+        string video_ruta_archivo FK
+        datetime comentario_fecha  FK
+        datetime fecha 
         string accion
-        datetime fecha
+    }
+
+    EQUIPO {
+        string nombre PK
     }
 
     ESTADISTICAS_PARTIDO {
-        int id PK
-        int video_id FK
-        int equipoA_id FK
-        int equipoB_id FK
+        string video_ruta_archivo PK, FK
+        string equipoA_nombre FK
+        string equipoB_nombre FK
         int golesA
         int golesB
     }
 
     FALTA {
-        int id PK
-        int estadisticas_partido_id FK
-        int equipo_id FK
+        string video_ruta_archivo PK, FK
+        string equipo_nombre PK, FK
+        datetime momento PK
         string descripcion
-    }
-
-    EQUIPO {
-        int id PK
-        string nombre
     }
 
     %% === RELACIONES ===
@@ -106,27 +107,19 @@ erDiagram
     USUARIO ||--o{ PAGO_PREMIUM : realiza
     USUARIO ||--o{ COMENTARIO : escribe
     USUARIO ||--o{ PERMISO_USUARIO : tiene
+    USUARIO ||--o{ MODERACION_LOG : modera
 
-    PERMISO ||--o{ PERMISO_USUARIO : otorga
+    PERMISO ||--o{ PERMISO_USUARIO : es_asignado
 
     VIDEO ||--o{ COMENTARIO : recibe
     VIDEO ||--|| ESTADISTICAS_PARTIDO : contiene
 
     CATEGORIA ||--o{ VIDEO : clasifica
 
-    COMENTARIO ||--o{ MODERACION_LOG : recibe
+    COMENTARIO ||--o{ MODERACION_LOG : es_moderado
 
     ESTADISTICAS_PARTIDO ||--o{ FALTA : contiene
     FALTA }o--|| EQUIPO : cometida_por
 
     ESTADISTICAS_PARTIDO }|--|| EQUIPO : equipoA
     ESTADISTICAS_PARTIDO }|--|| EQUIPO : equipoB
-
-    %% === NUEVAS RELACIONES PARA ADMINISTRADORES ===
-    USUARIO ||--o{ MODERACION_LOG : puede_acceder_si_admin
-    USUARIO ||--o{ COMENTARIO : puede_borrar_si_admin
-
-    %% === NOTAS DE PERMISOS ===
-    %% Usuarios con permiso "ver_video_premium" pueden ver videos premium
-    %% Usuarios con permiso "moderar_comentarios" pueden moderar comentarios
-    %% El permiso "admin" implica acceso total, incluyendo acceso al log de moderación y eliminación de comentarios
