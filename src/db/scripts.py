@@ -51,4 +51,4 @@ class DBCreateUserTable(DBBaseScript[EmptyDBModel]):
         return "ddl/user.sql"
 
 
-DDL_SCRIPTS = [DBCreateUserTable]
+DDL_SCRIPTS: list[DBBaseScript[Any]] = []
