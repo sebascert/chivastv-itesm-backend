@@ -1,6 +1,11 @@
 # config
 *.env
 
+# docs
+/doc/puppeteer-config.json
+/doc/*.png
+/doc/*.svg
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
