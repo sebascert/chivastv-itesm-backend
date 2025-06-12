@@ -5,8 +5,8 @@ from typing import Any
 
 from sqlalchemy import Result, text
 
+from db.engine import ENGINE
 from db.models import BDBaseModel, EmptyDBModel
-from db.session import db_session
 
 SCRIPTS_DIR = Path(__file__).resolve().parent / "scripts"
 
@@ -25,9 +25,8 @@ class DBBaseScript[T: BDBaseModel](ABC):
     @classmethod
     def _execute(cls, **params: str) -> Result[Any]:
         """stablish connection and executes script"""
-        with db_session() as session:
-            res = session.execute(text(cls.script()), params)
-            return res
+        with ENGINE.begin() as connection:
+            return connection.execute(text(cls.script()), params)
 
     @classmethod
     @abstractmethod
