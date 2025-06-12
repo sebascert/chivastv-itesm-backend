@@ -3,12 +3,15 @@
 from typing import Annotated
 from uuid import UUID
 
-from fastapi import APIRouter, Body, Depends
+from fastapi import APIRouter, Body, Depends, HTTPException, Response, status
+from fastapi.responses import JSONResponse
 from fastapi.security import OAuth2PasswordRequestForm
 
+from core.user import auth_user, user_role
 from dependencies.auth import get_token, get_user
 from models.response import UserProfile
-from utils.auth import TokenData
+from utils.auth import TOKEN_COOKIE, TokenData, encode_jwt, set_token_cookie
+from utils.config import ENV
 from utils.types import json
 
 router = APIRouter(
@@ -39,15 +42,45 @@ async def register_user(
     raise NotImplementedError()
 
 
-@router.post("/token/")
+@router.post("/token")
 async def login_user(
     form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
-) -> json:
+) -> Response:
     """user login"""
-    raise NotImplementedError()
+
+    user = auth_user(form_data.username, form_data.password)
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Usuario o contraseña invalidos",
+        )
+
+    role = user_role(user)
+    token = encode_jwt(TokenData.create(user, role))
+
+    response: JSONResponse
+    if ENV == "dev":  # return token in response
+        response = JSONResponse(
+            content={
+                TOKEN_COOKIE: token,
+                "token_type": "bearer",
+            }
+        )
+    elif ENV == "prod":  # return token on secure HttpOnly cookie
+        response = JSONResponse(
+            content={"message": "token supplied on HttpOnly cookie"}
+        )
+        set_token_cookie(response, token)
+    return response
 
 
 @router.delete("/token")
-async def logout_user(token: Annotated[TokenData, Depends(get_token)]) -> json:
+async def logout_user(
+    token: Annotated[TokenData, Depends(get_token)],
+) -> Response:
     """user logout"""
-    raise NotImplementedError()
+    response = JSONResponse(
+        content={"message": "token successfully forgotten"}
+    )
+    set_token_cookie(response, "")
+    return response
