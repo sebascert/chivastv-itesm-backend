@@ -21,6 +21,8 @@ def getenv[T](var: str, constructor: Callable[[str], T]) -> T:
         ) from e
 
 
+ENV = getenv("CHIVASTV_ENV", str)
+
 # DATABASE
 DB_USER = getenv("CHIVASTV_DATABASE_USER", str)
 DB_PSWD = getenv("CHIVASTV_DATABASE_PSWD", str)

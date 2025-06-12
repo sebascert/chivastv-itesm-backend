@@ -38,6 +38,8 @@ uv sync --no-dev
 Se debe de configurar el archivo `src/.env` con las siguientes variables:
 
 ```env
+CHIVASTV_ENV="prod|dev" # API environment, production or development
+
 CHIVASTV_DATABASE_USER="user" # connection user
 CHIVASTV_DATABASE_PSWD="pswd" # user password
 CHIVASTV_DATABASE_HOST="localhost" # database host
