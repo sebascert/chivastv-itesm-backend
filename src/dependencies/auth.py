@@ -5,10 +5,9 @@ from fastapi import Depends, HTTPException, Request, status
 from fastapi.security import OAuth2PasswordBearer
 
 from models.token import TokenData
-from utils.auth import decode_jwt
+from utils.auth import TOKEN_COOKIE, TOKEN_ENDPOINT, decode_jwt
 
 # ruff: noqa: S105
-TOKEN_ENDPOINT = "user/token"
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl=TOKEN_ENDPOINT, auto_error=False)
 
 
