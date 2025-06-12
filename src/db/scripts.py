@@ -6,13 +6,13 @@ from typing import Any
 from sqlalchemy import Result, text
 
 from db.engine import ENGINE
-from db.models import BDBaseModel
+from db.models import DBBaseModel
 from db.script_params import DBBaseScriptParams
 
 SCRIPTS_DIR = Path(__file__).resolve().parent / "scripts"
 
 
-class DBBaseScript[T: BDBaseModel | None, U: DBBaseScriptParams | None](ABC):
+class DBBaseScript[T: DBBaseModel | None, U: DBBaseScriptParams | None](ABC):
     _script: str | None = None
 
     @classmethod
