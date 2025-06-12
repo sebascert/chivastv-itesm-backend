@@ -15,6 +15,7 @@ dependencies = [
     "sqlalchemy>=2.0.41",
     "types-passlib>=1.7.7.20250602",
     "uvicorn>=0.34.3",
+    "sqlparse>=0.5.3"
 ]
 
 [dependency-groups]
