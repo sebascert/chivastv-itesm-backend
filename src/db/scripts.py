@@ -187,7 +187,6 @@ class DBViews(DBBaseScript[EmptyDBModel]):
     def path(cls) -> str:
         return "views.sql"
 
-
 DDL_SCRIPTS: list[DBBaseScript[Any]] = [
     DBCreateSchema,
     DBCreateCategoryTable,
