@@ -1,19 +1,19 @@
 from abc import ABC, abstractmethod
-from collections.abc import Callable
+from dataclasses import asdict
 from pathlib import Path
 from typing import Any
 
 from sqlalchemy import Result, text
 
 from db.engine import ENGINE
-from db.models import BDBaseModel, EmptyDBModel
+from db.models import BDBaseModel
+from db.script_params import DBBaseScriptParams
 
 SCRIPTS_DIR = Path(__file__).resolve().parent / "scripts"
 
 
-class DBBaseScript[T: BDBaseModel](ABC):
+class DBBaseScript[T: BDBaseModel | None, U: DBBaseScriptParams | None](ABC):
     _script: str | None = None
-    model_cons: Callable[[Result[Any]], T]
 
     @classmethod
     def script(cls) -> str:
@@ -23,7 +23,7 @@ class DBBaseScript[T: BDBaseModel](ABC):
         return cls._script
 
     @classmethod
-    def _execute(cls, **params: str) -> Result[Any]:
+    def _execute(cls, params: dict[str, str]) -> Result[Any]:
         """stablish connection and executes script"""
         with ENGINE.begin() as connection:
             return connection.execute(text(cls.script()), params)
@@ -34,20 +34,18 @@ class DBBaseScript[T: BDBaseModel](ABC):
         """path to script"""
 
     @classmethod
-    def execute(cls, **params: str) -> T:
+    @abstractmethod
+    def model_constructor(cls, result: Result[Any]) -> T:
+        """constructor for the model"""
+
+    @classmethod
+    def execute(cls, params: U) -> T:
         """execute script and return corresponding db model"""
-        return cls.model_cons(cls._execute(**params))
+        result = cls._execute(dict() if params is None else asdict(params))
+        return cls.model_constructor(result)
 
 
 # Data Definition Lang Scripts
 
 
-class DBCreateUserTable(DBBaseScript[EmptyDBModel]):
-    model_cons = EmptyDBModel
-
-    @classmethod
-    def path(cls) -> str:
-        return "ddl/user.sql"
-
-
-DDL_SCRIPTS: list[DBBaseScript[Any]] = []
+DDL_SCRIPTS: list[DBBaseScript[None, None]] = []

@@ -9,7 +9,3 @@ class BDBaseModel(ABC):
 
     def __init__(self, res: Result[Any]) -> None:
         pass
-
-
-class EmptyDBModel(BDBaseModel):
-    """ignores database result"""
