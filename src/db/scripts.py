@@ -59,6 +59,12 @@ class DBBaseScript[T: BDBaseModel](ABC):
 
 
 # Data Definition Lang Scripts
+class DBCreateSchema(DBBaseScript[EmptyDBModel]):
+    model_cons = EmptyDBModel
+
+    @classmethod
+    def path(cls) -> str:
+        return "DB.sql"
 
 class DBCreateCategoryTable(DBBaseScript[EmptyDBModel]):
     model_cons = EmptyDBModel
@@ -183,6 +189,7 @@ class DBViews(DBBaseScript[EmptyDBModel]):
 
 
 DDL_SCRIPTS: list[DBBaseScript[Any]] = [
+    DBCreateSchema,
     DBCreateCategoryTable,
     DBCreateTeamTable,
     DBCreatePermitTable,
