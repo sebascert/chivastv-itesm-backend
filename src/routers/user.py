@@ -7,7 +7,7 @@ from fastapi import APIRouter, Body, Depends, HTTPException, Response, status
 from fastapi.responses import JSONResponse
 from fastapi.security import OAuth2PasswordRequestForm
 
-from core.user import auth_user, user_role
+from core.user import auth_user, user_profile, user_role
 from dependencies.auth import get_token, get_user
 from models.response import UserProfile
 from utils.auth import TOKEN_COOKIE, TokenData, encode_jwt, set_token_cookie
@@ -25,7 +25,7 @@ async def get_user_profile(
     user_id: Annotated[UUID, Depends(get_user)],
 ) -> UserProfile:
     """get user profile information"""
-    raise NotImplementedError()
+    return user_profile(user_id)
 
 
 @router.delete("/")
