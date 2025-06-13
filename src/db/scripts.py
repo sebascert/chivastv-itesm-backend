@@ -18,7 +18,8 @@ from db.script_params import (
     RegistrarUsuarioParams,
     LoginUsuarioParams,
     CrearVideoParams,
-    ObtenerVideoParams
+    ObtenerVideoParams,
+
 )
 
 SCRIPTS_DIR = Path(__file__).resolve().parent / "scripts"
@@ -257,20 +258,126 @@ class DBCreateVideoTable(DBBaseScript[None, None]):
     def model_constructor(cls, result: Result[Any]) -> None:
         return None
 
+class ObtenerComentariosEnRango(DBBaseScript[None, None]):
+    @classmethod
+    def path(cls) -> str:
+        return "ddl/procedures/obtener_comentarios_en_rango.sql"
+
+    @classmethod
+    def model_constructor(cls, result: Result[Any]) -> None:
+        return None
+
+
+class InsertarComentario(DBBaseScript[None, None]):
+    @classmethod
+    def path(cls) -> str:
+        return "ddl/procedures/insertar_comentario.sql"
+
+    @classmethod
+    def model_constructor(cls, result: Result[Any]) -> None:
+        return None
+
+
+class EliminarComentario(DBBaseScript[None, None]):
+    @classmethod
+    def path(cls) -> str:
+        return "ddl/procedures/eliminar_comentario.sql"
+
+    @classmethod
+    def model_constructor(cls, result: Result[Any]) -> None:
+        return None
+
+
+class ObtenerEstadisticas(DBBaseScript[None, None]):
+    @classmethod
+    def path(cls) -> str:
+        return "ddl/procedures/obtener_estadisticas.sql"
+
+    @classmethod
+    def model_constructor(cls, result: Result[Any]) -> None:
+        return None
+
+
+class RegistrarUsuario(DBBaseScript[None, None]):
+    @classmethod
+    def path(cls) -> str:
+        return "ddl/procedures/registrar_usuario.sql"
+
+    @classmethod
+    def model_constructor(cls, result: Result[Any]) -> None:
+        return None
+
+
+class LoginUsuario(DBBaseScript[None, None]):
+    @classmethod
+    def path(cls) -> str:
+        return "ddl/procedures/login_usuario.sql"
+
+    @classmethod
+    def model_constructor(cls, result: Result[Any]) -> None:
+        return None
+
+
+class CrearVideo(DBBaseScript[None, None]):
+    @classmethod
+    def path(cls) -> str:
+        return "ddl/procedures/crear_video.sql"
+
+    @classmethod
+    def model_constructor(cls, result: Result[Any]) -> None:
+        return None
+
+
+class ObtenerVideo(DBBaseScript[None, None]):
+    @classmethod
+    def path(cls) -> str:
+        return "ddl/procedures/obtener_video.sql"
+
+    @classmethod
+    def model_constructor(cls, result: Result[Any]) -> None:
+        return None
+
+class DBCreateViews(DBBaseScript[None, None]):
+    @classmethod
+    def path(cls) -> str:
+        return "views/views.sql"
+
+    @classmethod
+    def model_constructor(cls, result: Result[Any]) -> None:
+        return None
+
+
+class DBCreateTriggers(DBBaseScript[None, None]):
+    @classmethod
+    def path(cls) -> str:
+        return "triggers/all_triggers.sql"  # o usa uno por uno si están separados
+
+    @classmethod
+    def model_constructor(cls, result: Result[Any]) -> None:
+        return None
+
 
 DDL_SCRIPTS: list[DBBaseScript[None, None]] = [
     DBCreateUsuarioTable,
     DBCreateCategoriaTable,
     DBCreateEquipoTable,
     DBCreatePermisoTable,
-    DBCreateVideoTable,              # ✅ video va antes que comentario
-    DBCreateComentarioTable,         # depende de video y usuario
-    DBCreatePermisoUsuarioTable,     # depende de permiso y usuario
-    DBCreatePagoPremiumTable,        # depende de usuario
-    DBCreateSesionTable,             # depende de usuario
-    DBCreateEstadisticasPartidoTable,# depende de video y equipo
-    DBCreateFaltaTable,              # depende de estadisticas_partido y equipo
-    DBCreateModeracionLogTable       # depende de video y usuario
+    DBCreateVideoTable,
+    DBCreateComentarioTable,
+    DBCreatePermisoUsuarioTable,
+    DBCreatePagoPremiumTable,
+    DBCreateSesionTable,
+    DBCreateEstadisticasPartidoTable,
+    DBCreateFaltaTable,
+    DBCreateModeracionLogTable,
+    ObtenerComentariosEnRango,
+    InsertarComentario,
+    EliminarComentario,
+    ObtenerEstadisticas,
+    RegistrarUsuario,
+    LoginUsuario,
+    CrearVideo,
+    ObtenerVideo
 ]
 
 

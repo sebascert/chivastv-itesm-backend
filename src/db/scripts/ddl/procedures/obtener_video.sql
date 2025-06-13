@@ -1,0 +1,10 @@
+DROP PROCEDURE IF EXISTS obtener_video;
+DELIMITER //
+CREATE PROCEDURE obtener_video(
+    IN ID INT
+)
+BEGIN
+    SELECT * FROM video WHERE ID = ID AND deleted = 0;
+END;
+//
+DELIMITER ;
