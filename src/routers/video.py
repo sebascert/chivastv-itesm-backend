@@ -25,7 +25,7 @@ async def get_video(
     raise NotImplementedError()
 
 
-@router.post("{video_id}/")
+@router.post("{video_id}")
 async def create_video(
     video_id: Annotated[str, Depends(get_video_by_id)],
     user_id: Annotated[UUID, Depends(get_user)],
@@ -34,7 +34,7 @@ async def create_video(
     raise NotImplementedError()
 
 
-@router.delete("{video_id}/")
+@router.delete("{video_id}")
 async def delete_video(
     video_id: Annotated[str, Depends(get_video_by_id)],
     user_id: Annotated[UUID, Depends(get_user)],
@@ -52,7 +52,7 @@ async def get_videos_by_category(
     raise NotImplementedError()
 
 
-@router.put("{video_id}/")
+@router.put("{video_id}")
 async def update_video(
     video_id: Annotated[str, Depends(get_video_by_id)],
     user_id: Annotated[UUID, Depends(get_user)],

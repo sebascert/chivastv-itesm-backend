@@ -6,6 +6,7 @@ from pydantic import BaseModel
 
 class UserProfile(BaseModel):
     id: UUID
+
     email: str
     name: str
     lastname: str
@@ -14,12 +15,11 @@ class UserProfile(BaseModel):
     birth_date: datetime
     occupation: str
 
-    creation_date: datetime
-
     address: str
     postal_code: str
-    state: str
     city: str
+    state: str
+    country: str
 
 
 # VIDEO

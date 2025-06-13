@@ -22,7 +22,7 @@ router = APIRouter(
 
 @router.get("/")
 async def get_user_profile(
-    user_id: Annotated[UUID, Depends(get_user)], data: UserProfile = Body()
+    user_id: Annotated[UUID, Depends(get_user)],
 ) -> UserProfile:
     """get user profile information"""
     raise NotImplementedError()
@@ -42,7 +42,7 @@ async def register_user(
     raise NotImplementedError()
 
 
-@router.post("/token")
+@router.post("/token/")
 async def login_user(
     form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
 ) -> Response:
@@ -74,7 +74,7 @@ async def login_user(
     return response
 
 
-@router.delete("/token")
+@router.delete("/token/")
 async def logout_user(
     token: Annotated[TokenData, Depends(get_token)],
 ) -> Response:
