@@ -6,8 +6,20 @@ from typing import Any
 from sqlalchemy import Result, text
 
 from db.engine import ENGINE
-from db.models import DBBaseModel
-from db.script_params import DBBaseScriptParams
+from db.models import DBBaseModel, ComentarioModel
+
+
+from db.script_params import (
+    DBBaseScriptParams,
+    ObtenerComentariosParams,
+    InsertarComentarioParams,
+    EliminarComentarioParams,
+    ObtenerEstadisticasParams,
+    RegistrarUsuarioParams,
+    LoginUsuarioParams,
+    CrearVideoParams,
+    ObtenerVideoParams
+)
 
 SCRIPTS_DIR = Path(__file__).resolve().parent / "scripts"
 
@@ -47,5 +59,219 @@ class DBBaseScript[T: DBBaseModel | None, U: DBBaseScriptParams | None](ABC):
 
 # Data Definition Lang Scripts
 
+class ObtenerComentariosEnRango(DBBaseScript[list[ComentarioModel], ObtenerComentariosParams]):
+    @classmethod
+    def path(cls) -> str:
+        return "dml/simulacion_endpoints.sql"
 
-DDL_SCRIPTS: list[DBBaseScript[None, None]] = []
+    @classmethod
+    def model_constructor(cls, result: Result[Any]) -> list[ComentarioModel]:
+        return [ComentarioModel(dict(row._mapping)) for row in result]
+
+
+class InsertarComentario(DBBaseScript[None, InsertarComentarioParams]):
+    @classmethod
+    def path(cls) -> str:
+        return "dml/simulacion_endpoints.sql"
+
+    @classmethod
+    def model_constructor(cls, result: Result[Any]) -> None:
+        return None
+
+
+class EliminarComentario(DBBaseScript[None, EliminarComentarioParams]):
+    @classmethod
+    def path(cls) -> str:
+        return "dml/simulacion_endpoints.sql"
+
+    @classmethod
+    def model_constructor(cls, result: Result[Any]) -> None:
+        return None
+
+
+class ObtenerEstadisticas(DBBaseScript[list[dict], ObtenerEstadisticasParams]):
+    @classmethod
+    def path(cls) -> str:
+        return "dml/simulacion_endpoints.sql"
+
+    @classmethod
+    def model_constructor(cls, result: Result[Any]) -> list[dict]:
+        return [dict(row._mapping) for row in result]
+
+
+class RegistrarUsuario(DBBaseScript[None, RegistrarUsuarioParams]):
+    @classmethod
+    def path(cls) -> str:
+        return "dml/simulacion_endpoints.sql"
+
+    @classmethod
+    def model_constructor(cls, result: Result[Any]) -> None:
+        return None
+
+
+class LoginUsuario(DBBaseScript[list[dict], LoginUsuarioParams]):
+    @classmethod
+    def path(cls) -> str:
+        return "dml/simulacion_endpoints.sql"
+
+    @classmethod
+    def model_constructor(cls, result: Result[Any]) -> list[dict]:
+        return [dict(row._mapping) for row in result]
+
+
+class CrearVideo(DBBaseScript[None, CrearVideoParams]):
+    @classmethod
+    def path(cls) -> str:
+        return "dml/simulacion_endpoints.sql"
+
+    @classmethod
+    def model_constructor(cls, result: Result[Any]) -> None:
+        return None
+
+
+class ObtenerVideo(DBBaseScript[list[dict], ObtenerVideoParams]):
+    @classmethod
+    def path(cls) -> str:
+        return "dml/simulacion_endpoints.sql"
+
+    @classmethod
+    def model_constructor(cls, result: Result[Any]) -> list[dict]:
+        return [dict(row._mapping) for row in result]
+
+
+class DBCreateCategoriaTable(DBBaseScript[None, None]):
+    @classmethod
+    def path(cls) -> str:
+        return "ddl/categoria.sql"
+
+    @classmethod
+    def model_constructor(cls, result: Result[Any]) -> None:
+        return None
+
+
+class DBCreateComentarioTable(DBBaseScript[None, None]):
+    @classmethod
+    def path(cls) -> str:
+        return "ddl/comentario.sql"
+
+    @classmethod
+    def model_constructor(cls, result: Result[Any]) -> None:
+        return None
+
+
+class DBCreateEquipoTable(DBBaseScript[None, None]):
+    @classmethod
+    def path(cls) -> str:
+        return "ddl/equipo.sql"
+
+    @classmethod
+    def model_constructor(cls, result: Result[Any]) -> None:
+        return None
+
+
+class DBCreatePermisoTable(DBBaseScript[None, None]):
+    @classmethod
+    def path(cls) -> str:
+        return "ddl/permiso.sql"
+
+    @classmethod
+    def model_constructor(cls, result: Result[Any]) -> None:
+        return None
+
+class DBCreateUsuarioTable(DBBaseScript[None, None]):
+    @classmethod
+    def path(cls) -> str:
+        return "ddl/usuario.sql"
+
+    @classmethod
+    def model_constructor(cls, result: Result[Any]) -> None:
+        return None
+
+
+class DBCreatePermisoUsuarioTable(DBBaseScript[None, None]):
+    @classmethod
+    def path(cls) -> str:
+        return "ddl/permiso_usuario.sql"
+
+    @classmethod
+    def model_constructor(cls, result: Result[Any]) -> None:
+        return None
+
+
+class DBCreatePagoPremiumTable(DBBaseScript[None, None]):
+    @classmethod
+    def path(cls) -> str:
+        return "ddl/pago_premium.sql"
+
+    @classmethod
+    def model_constructor(cls, result: Result[Any]) -> None:
+        return None
+
+
+class DBCreateSesionTable(DBBaseScript[None, None]):
+    @classmethod
+    def path(cls) -> str:
+        return "ddl/sesion.sql"
+
+    @classmethod
+    def model_constructor(cls, result: Result[Any]) -> None:
+        return None
+
+
+class DBCreateEstadisticasPartidoTable(DBBaseScript[None, None]):
+    @classmethod
+    def path(cls) -> str:
+        return "ddl/estadisticas_partido.sql"
+
+    @classmethod
+    def model_constructor(cls, result: Result[Any]) -> None:
+        return None
+
+
+class DBCreateFaltaTable(DBBaseScript[None, None]):
+    @classmethod
+    def path(cls) -> str:
+        return "ddl/falta.sql"
+
+    @classmethod
+    def model_constructor(cls, result: Result[Any]) -> None:
+        return None
+
+
+class DBCreateModeracionLogTable(DBBaseScript[None, None]):
+    @classmethod
+    def path(cls) -> str:
+        return "ddl/moderacion_log.sql"
+
+    @classmethod
+    def model_constructor(cls, result: Result[Any]) -> None:
+        return None
+
+
+class DBCreateVideoTable(DBBaseScript[None, None]):
+    @classmethod
+    def path(cls) -> str:
+        return "ddl/video.sql"
+
+    @classmethod
+    def model_constructor(cls, result: Result[Any]) -> None:
+        return None
+
+
+DDL_SCRIPTS: list[DBBaseScript[None, None]] = [
+    DBCreateUsuarioTable,
+    DBCreateCategoriaTable,
+    DBCreateEquipoTable,
+    DBCreatePermisoTable,
+    DBCreateVideoTable,              # ✅ video va antes que comentario
+    DBCreateComentarioTable,         # depende de video y usuario
+    DBCreatePermisoUsuarioTable,     # depende de permiso y usuario
+    DBCreatePagoPremiumTable,        # depende de usuario
+    DBCreateSesionTable,             # depende de usuario
+    DBCreateEstadisticasPartidoTable,# depende de video y equipo
+    DBCreateFaltaTable,              # depende de estadisticas_partido y equipo
+    DBCreateModeracionLogTable       # depende de video y usuario
+]
+
+
+
