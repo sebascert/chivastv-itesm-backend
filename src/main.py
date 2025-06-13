@@ -1,6 +1,8 @@
 import uvicorn
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from routers.video import router as video_router
+
 
 from db.setup import db_setup
 from routers import include_routers
@@ -9,6 +11,7 @@ from utils.types import json
 db_setup()
 
 app = FastAPI()
+app.include_router(video_router)
 
 include_routers(app)
 

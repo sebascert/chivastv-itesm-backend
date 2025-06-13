@@ -21,11 +21,22 @@ router = APIRouter(
 
 
 @router.get("/")
-async def get_user_profile(
-    user_id: Annotated[UUID, Depends(get_user)],
-) -> UserProfile:
-    """get user profile information"""
-    return user_profile(user_id)
+async def get_user_profile() -> dict:
+    """Simulación de perfil de usuario (hardcoded)"""
+    return {
+        "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+        "email": "demo@chivastv.com",
+        "name": "Demo",
+        "lastname": "Usuario",
+        "genre": "masculino",
+        "birth_date": "10-10",
+        "occupation": "aficionado",
+        "creation_date": "datetime.utcnow().isoformat()",
+        "address": "Estadio Akron",
+        "postal_code": "44200",
+        "state": "Jalisco",
+        "city": "Guadalajara"
+    }
 
 
 @router.delete("/")
@@ -36,10 +47,22 @@ async def delete_user(user_id: Annotated[UUID, Depends(get_user)]) -> json:
 
 @router.post("/register/")
 async def register_user(
-    user_id: Annotated[UUID, Depends(get_user)], data: UserProfile = Body()
+    data: dict = Body(...)
 ) -> json:
-    """register new user"""
-    raise NotImplementedError()
+    """Registro simulado de nuevo usuario (hardcodeado)"""
+    return {
+        "id": "mock-id-1234",
+        "nombre": data.get("nombre", ""),
+        "apellido": data.get("apellido", ""),
+        "genero": data.get("genero", ""),
+        "ocupacion": data.get("ocupacion", ""),
+        "email": data.get("email", ""),
+        "postal": data.get("postal", ""),
+        "domicilio": data.get("domicilio", ""),
+        "estado": data.get("estado", ""),
+        "pais": data.get("pais", ""),
+        "mensaje": "Usuario registrado exitosamente (simulado)"
+    }
 
 
 @router.post("/token/")
