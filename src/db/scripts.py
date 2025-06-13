@@ -6,8 +6,20 @@ from typing import Any
 from sqlalchemy import Result, text
 
 from db.engine import ENGINE
-from db.models import DBBaseModel
-from db.script_params import DBBaseScriptParams
+from db.models import DBBaseModel, ComentarioModel
+
+
+from db.script_params import (
+    DBBaseScriptParams,
+    ObtenerComentariosParams,
+    InsertarComentarioParams,
+    EliminarComentarioParams,
+    ObtenerEstadisticasParams,
+    RegistrarUsuarioParams,
+    LoginUsuarioParams,
+    CrearVideoParams,
+    ObtenerVideoParams
+)
 
 SCRIPTS_DIR = Path(__file__).resolve().parent / "scripts"
 
@@ -249,19 +261,17 @@ class DBCreateVideoTable(DBBaseScript[None, None]):
 DDL_SCRIPTS: list[DBBaseScript[None, None]] = [
     DBCreateUsuarioTable,
     DBCreateCategoriaTable,
-    DBCreateComentarioTable,
     DBCreateEquipoTable,
     DBCreatePermisoTable,
-    DBCreatePermisoUsuarioTable,
-    DBCreatePagoPremiumTable,
-    DBCreateSesionTable,
-    DBCreateEstadisticasPartidoTable,
-    DBCreateFaltaTable,
-    DBCreateModeracionLogTable,
-    DBCreateVideoTable
+    DBCreateVideoTable,              # ✅ video va antes que comentario
+    DBCreateComentarioTable,         # depende de video y usuario
+    DBCreatePermisoUsuarioTable,     # depende de permiso y usuario
+    DBCreatePagoPremiumTable,        # depende de usuario
+    DBCreateSesionTable,             # depende de usuario
+    DBCreateEstadisticasPartidoTable,# depende de video y equipo
+    DBCreateFaltaTable,              # depende de estadisticas_partido y equipo
+    DBCreateModeracionLogTable       # depende de video y usuario
 ]
 
 
 
-
-DDL_SCRIPTS: list[DBBaseScript[None, None]] = []
