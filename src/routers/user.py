@@ -35,7 +35,8 @@ async def get_user_profile() -> dict:
         "address": "Estadio Akron",
         "postal_code": "44200",
         "state": "Jalisco",
-        "city": "Guadalajara"
+        "city": "Guadalajara",
+        "role": "gratis"
     }
 
 

@@ -1,6 +1,8 @@
 # ruff: noqa: B008
-from fastapi import Request
 from fastapi.responses import JSONResponse
+from fastapi import Depends, HTTPException, status, Request
+from .user import get_user
+
 
 
 from typing import Annotated
@@ -55,6 +57,11 @@ async def create_comment(video_id: str, request: Request):
 @router.delete("/{comment_id}")
 async def delete_comment(
     comment_id: Annotated[str, Depends(get_comment_by_id)],
-) -> json:
-    """delete comment entry"""
-    raise NotImplementedError()
+    user: Annotated[dict, Depends(get_user)],  # Asegura que get_user devuelva el perfil
+) -> dict:
+    if user["role"] != "admin":
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="No autorizado para eliminar comentarios")
+    
+    return {
+        "message": f"Comentario {comment_id} eliminado por admin {user['email']}"
+    }
